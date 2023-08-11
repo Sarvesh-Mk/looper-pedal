@@ -1,19 +1,36 @@
-use actix_web::{web, App, HttpServer, Responder};
+use yew::prelude::*;
 
-async fn index() -> impl Responder {
-    "Hello world!"
+struct Model {
+    value: i64
+}
+
+#[function_component(App)]
+fn app() -> Html {
+    let state = use_state(|| Model {
+        value: 0
+    });
+
+    let onclick = {
+        let state = state.clone();
+
+        Callback::from(move |_| {
+            state.set(Model {
+                value: state.value + 1
+            })
+        })
+    };
+
+    html! {
+        <div>
+            <button {onclick}>
+                { "+1" }
+            </button>
+            <p>{ state.value }</p>
+        </div>
+    }
 }
 
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new().service(
-            web::scope("/app")
-                .route("/index.html", web::get().to(index)),
-        )
-    })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+fn main() {
+    yew::start_app::<App>();
 }
