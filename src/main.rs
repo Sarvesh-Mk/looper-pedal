@@ -1,36 +1,34 @@
-use yew::prelude::*;
+use leptos::*;
 
-struct Model {
-    value: i64
+
+#[component]
+fn App(cx: Scope) -> impl IntoView {
+    let (count, set_count) = create_signal(cx, 0);
+
+    view! {cx,
+        <button
+            on:click=move |_| {
+                set_count.update(|n| {
+                    if *n == true as i32 {
+                        *n = false as i32
+                    }
+                    else {*n=true as i32}
+                }
+                );
+            }
+        >
+            "record"
+
+        </button>
+        
+        <p>
+            {move || count.get()}
+        </p>
+
+    } 
 }
 
-#[function_component(App)]
-fn app() -> Html {
-    let state = use_state(|| Model {
-        value: 0
-    });
 
-    let onclick = {
-        let state = state.clone();
-
-        Callback::from(move |_| {
-            state.set(Model {
-                value: state.value + 1
-            })
-        })
-    };
-
-    html! {
-        <div>
-            <button {onclick}>
-                { "+1" }
-            </button>
-            <p>{ state.value }</p>
-        </div>
-    }
-}
-
-
-fn main() {
-    yew::start_app::<App>();
+fn main(){
+    leptos::mount_to_body(|cx| view! { cx, <App/>});
 }
